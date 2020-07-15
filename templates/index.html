@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Drive Thru</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+    </head>
+    <style>
+        .hide{
+            display: none;
+        }
+
+        .order{
+            width: 70%;
+            border: 1px solid lightgrey;
+            margin: auto;
+            margin-top: 20px;
+    
+        }
+        .one{
+            margin-right: 5%;
+        }
+        .two {
+            border-left: 1px solid black ;
+            margin-top: 10px;
+            margin-bottom: 10px;
+         
+        }
+        .three{
+            text-align: right;
+            margin-right: 20px;
+          
+        }
+        .btn{
+            margin: 5px;
+
+        }
+   
+        .col{
+            padding:20px;
+        }
+        .barR{
+            background-color: red;
+            max-width: 10px;
+            padding:0px;
+            margin: 0px;
+        }
+        .barB{
+            background-color: blue;
+            max-width: 10px;
+            padding:0px;
+            margin: 0px;
+        }
+        h5{
+            padding-top: 10px;
+            padding-left: 15%;
+        }
+        .arrow, .computer{
+            display: none;
+        }
+        hr{
+            padding-top: 0px;
+            margin-top: 0px;
+        }
+
+        @media (max-width: 1000px){
+            h1{
+                font-size: 30px;
+            }
+            h3{
+                font-size: 20px;
+            }
+            .two, .btn, .status{
+                display: none;
+            }
+            .phone, .arrow , .show{
+                display: flex;
+
+            }
+            #orderTime{
+                font-size: 18px;
+            }
+            .three{
+                max-width:20%;
+
+                
+            }
+         
+            
+    
+            .order{
+                width: 95%;
+            }
+            hr{
+                border: 1px solid black;
+                
+            }
+            .phone > .one{
+                padding-top: 0px;
+            }
+            .arrow{
+                float: right;
+                font-size: 18px;
+            }
+            .arrowUp{
+                float: right;
+                font-size: 18px;
+                transform: rotate(180deg);
+            }
+           
+        }
+   
+
+ 
+    </style>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+            <a class="navbar-brand" href="{{url_for('home')}}">Drive-Thru</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse " id="navbarNav">
+                <ul class="navbar-nav">
+                <li class="nav-item active ">
+                    <a class="nav-link" href="{{url_for('home')}}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('new')}}">New Order</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('past')}}">Past Orders</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('delivery')}}">Delivery Pickup</a>
+                </li>
+        
+                </ul>
+            </div>
+        </nav>
+    
+    {%for order in orders%}
+    {% if order.status == "IP"%}
+    <div class="order container">
+      
+
+        <div class="row">
+
+            <span class="hide">{{order.id}}</span>
+
+
+            {%if order.payment == 'Not Paid'%}
+            <div class="col barR">
+
+            </div>
+            {%else%}
+            <div class="col barB">
+
+            </div>
+            {%endif%}
+
+            {%if order.name == 'Delivery'%}
+                <div class="col one">
+                
+                    <h1>{{order.service}}</h1>
+                    {%if order.service == 'Doordash'%}
+                    <h3>#{{order.customer}}</h3>
+                    {%else%}
+                    <h3>{{order.customer}}</h3>x
+                    {%endif%}
+                </div>
+                <div class="col two">
+                    <h5>{{order.car}}</h3>
+                    
+                </div>
+                <div class="col three">
+                    <p id = "orderTime"></p>
+            {%else%}
+                <div class="col one">
+            
+                    <h1>{{order.name}}</h1>
+                    <h3>{{order.number}}</h3>
+                    <p class="status">Status: {{order.payment}}</p>
+                </div>
+                <div class="col two">
+                    <h5>{{order.car}}</h3>
+                    {%if order.order_info == None%}
+                        <h5>Order Info: NA </h3>
+                    {%else%}
+                    <h5>Order Info: {{order.order_info}}</h3>
+                    {%endif%}
+                </div>
+                <div class="col three">
+                    <p id = "orderTime"></p>
+                    {% if order.payment == "Not Paid"%}
+                        <button class="btn btn-primary paid" > Paid </button>
+                    {% else %}
+                        <button disabled class="btn btn-primary paid" > Paid </button>
+                    {% endif %}
+               
+            {%endif%}
+            
+                    <span class="hide"><p id="time">{{order.time}}</p></span>
+                    <br>
+                    <button class="btn btn-primary complete"> Complete </button>
+                    <h2 class="arrow arrowDown">⌄</h2>
+
+                </div>
+
+            
+        </div>
+
+
+        <div class="row computer">
+
+            <span class="hide">{{order.id}}</span>
+
+            {%if order.payment == 'Not Paid'%}
+            <div class="col barR">
+
+            </div>
+            {%else%}
+            <div class="col barB">
+
+            </div>
+            {%endif%}
+
+            {%if order.name == 'Delivery'%}
+            <div class="col one">
+                <hr>
+
+            
+                <p >{{order.car}}</p>
+               
+
+                <button class="btn btn-primary complete show"> Complete </button>
+            </div>
+            {%else%}
+            <div class="col one">
+                <hr>
+
+                
+                <p >Status: {{order.payment}}</p>
+                <p >{{order.car}}</p>
+                {%if order.order_info == None%}
+                    <p>Order Info: </p>
+                {%else%}
+                <p>Order Info: {{order.order_info}}</p>
+                {%endif%}
+               
+                {% if order.payment == "Not Paid"%}
+                    <button class="btn btn-primary paid show" > Paid </button>
+                {% else %}
+                    <button disabled class="btn btn-primary paid show" > Paid </button>
+                {% endif %}
+
+                <button class="btn btn-primary complete show"> Complete </button>
+                <h2 class="arrow arrowUp">⌄</h2>
+
+            </div>
+
+            {%endif%}
+                
+             
+            
+        </div>
+       
+      
+        
+    </div>
+    {% endif %}
+    {%endfor%}
+    
+    <script>
+
+        document.addEventListener("DOMContentLoaded", ()=>{
+            let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+            
+            function toggle(row){
+                    if(row.parentElement.children[1].className == "row computer"){
+                        row.parentElement.children[1].className = "row phone";
+                        row.parentElement.children[0].children[4].children[5].className = "hide";
+                        row.parentElement.children[1].children[2].children[6].className = "arrow arrowUp"
+                    }else if(row.parentElement.children[1].className == "row phone"){
+                        row.parentElement.children[1].className = "row computer";
+                        row.parentElement.children[0].children[4].children[5].className = "arrow arrowDown";
+                        row.parentElement.children[1].children[2].children[6].className = "hide"
+                    }
+                  
+                
+            }
+
+            socket.on("connect", ()=>{
+                console.log("Connected")
+            })
+            socket.on("reload page", ()=>{
+                console.log("Reloading ...");
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            })
+
+         
+
+            document.querySelectorAll(".complete").forEach(button =>{
+                button.onclick = ()=>{
+                    const request = new XMLHttpRequest();
+
+                    request.open("POST", "/update")
+                    request.onload = ()=>{
+                        console.log(request.responseText);
+                        socket.emit("reload");
+                    }
+                    let data = new FormData();
+                    data.append("type", "complete");
+                    data.append("data",button.parentElement.parentElement.children[0].innerHTML);
+                    request.send(data)
+
+                }
+            });
+            document.querySelectorAll(".paid").forEach(button =>{
+                button.onclick = ()=>{
+                    const request = new XMLHttpRequest();
+
+                    request.open("POST", "/update")
+                    request.onload = ()=>{
+                        console.log(request.responseText);
+                        socket.emit("reload");
+
+                    }
+                    let data = new FormData();
+                    data.append("type", "paid");
+                    data.append("data",button.parentElement.parentElement.children[0].innerHTML);
+                    request.send(data)
+
+                }
+            });
+            document.querySelectorAll(".row").forEach(row =>{
+                row.onclick = e =>{
+                    let mql = window.matchMedia('(max-width: 1000px)');
+                    if(mql.matches){
+                        if(!(e.target instanceof HTMLButtonElement)){
+                        toggle(row);
+                    }
+                    }
+                    
+                   
+                }
+            })
+
+            let orderTimes = [];
+            document.querySelectorAll("#time").forEach(elem =>{
+                orderTimes.push(parseInt(elem.innerHTML));
+            });
+
+            let times = document.querySelectorAll("#orderTime");
+            for(let i = 0; i < times.length; i ++){
+                let currTime = parseInt(Date.now()/1000);
+                times[i].innerHTML = formatedTime(currTime, orderTimes[i]);
+            }
+            
+
+            setInterval(()=>{
+                let times = document.querySelectorAll("#orderTime");
+                for(let i = 0; i < times.length; i ++){
+                let currTime = parseInt(Date.now()/1000);
+
+                times[i].innerHTML = formatedTime(currTime, orderTimes[i]);
+            }
+            }, 1000);
+           
+            function formatedTime(currTime, orderTime){
+                let d = new Date(null);
+                d.setSeconds(currTime - orderTime);
+                let t = d.toISOString().substr(14,5);
+                return t;
+            }
+        
+        })
+    </script>
+    
+
+    </body>
+</html>
