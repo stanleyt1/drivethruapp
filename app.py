@@ -87,11 +87,13 @@ def update():
     print(typeOfData)
     print(id)
     if(typeOfData == "paid"):
-        order = db.execute("update orders set payment = 'Paid' where id = :id ", 
+        db.execute("update orders set payment = 'Paid' where id = :id ", 
         {"id":id})
         db.commit()
     if(typeOfData == "complete"):
-        order = db.execute("update orders set status = 'C' where id = :id ", 
+        db.execute("update orders set status = 'C' where id = :id ", 
+        {"id":id})
+        db.execute("update orders set payment = 'Paid' where id = :id ", 
         {"id":id})
         db.commit()
         

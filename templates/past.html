@@ -42,18 +42,13 @@
             .col{
                 padding:20px;
             }
-            .barR{
-                background-color: red;
+            .barG{
+                background-color: #30E540;
                 max-width: 10px;
                 padding:0px;
                 margin: 0px;
             }
-            .barB{
-                background-color: blue;
-                max-width: 10px;
-                padding:0px;
-                margin: 0px;
-            }
+            
             h5{
                 padding-top: 10px;
                 padding-left: 15%;
@@ -145,16 +140,10 @@
             <span class="hide">{{order.id}}</span>
 
 
-            {%if order.payment == 'Not Paid'%}
-            <div class="col barR">
+         
+            <div class="col barG">
 
             </div>
-            {%else%}
-            <div class="col barB">
-
-            </div>
-            {%endif%}
-
             {%if order.name == 'Delivery'%}
                 <div class="col one">
                 
@@ -204,20 +193,16 @@
 
             <span class="hide">{{order.id}}</span>
 
-            {%if order.payment == 'Not Paid'%}
-            <div class="col barR">
+            
+            <div class="col barG">
 
             </div>
-            {%else%}
-            <div class="col barB">
-
-            </div>
-            {%endif%}
+    
 
             {%if order.name == 'Delivery'%}
             <div class="col one">
                 <hr>
-                
+
                 <p >{{order.car}}</p>
                
             </div>
