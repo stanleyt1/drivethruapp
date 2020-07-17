@@ -28,6 +28,8 @@ def new():
     if(request.method == "POST"):
         name = request.form.get("name").title()
         number = request.form.get("number")
+        number = number[0:3] + "-"  + number[3:6]  + "-" + number[6:10]
+        print(number)
         car = request.form.get("car").title()
         order = request.form.get("order")
         payment = request.form.get("payment")
